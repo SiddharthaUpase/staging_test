@@ -1,0 +1,27 @@
+name: Deploy to Firebase Preview Channel
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Using the official Firebase Hosting GitHub Action instead of npx
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOGICRITE_NEXTJS_UI }}'
+          projectId: logicrite-nextjs-ui
+          channelId: pr1-develop
+          expires: 7d
