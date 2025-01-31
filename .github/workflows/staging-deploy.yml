@@ -1,9 +1,9 @@
-name: Deploy to Firebase Staging
+name: Deploy to Firebase Preview Channel
 
 on:
   push:
     branches:
-      - staging  # or whatever branch you want to trigger the deployment
+      - develop
 
 jobs:
   deploy:
@@ -15,11 +15,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
-      - name: Install Firebase Tools
-        run: npm install -g firebase-tools
 
-      - name: Deploy to Firebase
-        run: firebase deploy --only hosting:staging --token "${{ secrets.FIREBASE_TOKEN }}"
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      # Using the official Firebase Hosting GitHub Action instead of npx
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LOGICRITE_NEXTJS_UI }}'
+          projectId: logicrite-nextjs-ui
+          channelId: pr1-develop
+          expires: 7d
